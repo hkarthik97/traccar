@@ -69,7 +69,7 @@ if [ $PLATFORM = "all" -o $PLATFORM = "linux-64" -o $PLATFORM = "linux-arm" -o $
   check_requirement "Makeself" "which makeself" "Missing makeself binary"
 fi
 if [ $PLATFORM = "all" -o $PLATFORM = "linux-64" ]; then
-  check_requirement "Linux 64 Java" "ls OpenJDK*x64_linux*.tar.gz" "Missing Linux 64 JDK (https://adoptium.net/)"
+  check_requirement "Linux 64 Java" "ls openjdk-19+36_linux-x64_bin.tar.gz" "Missing Linux 64 JDK (https://adoptium.net/)"
 fi
 if [ $PLATFORM = "all" -o $PLATFORM = "linux-arm" ]; then
   check_requirement "Linux ARM Java" "ls OpenJDK*arm_linux*.tar.gz" "Missing Linux ARM JDK (https://adoptium.net/)"
