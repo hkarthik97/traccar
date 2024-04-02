@@ -137,7 +137,7 @@ package_linux () {
   cp setup.sh out
   cp traccar.service out
 
-  tar -xf OpenJDK*$2_linux*.tar.gz
+  tar -xf openjdk-19+36_linux-x64_bin.tar.gz
   jlink --module-path jdk-*/jmods --add-modules java.se,jdk.charsets,jdk.crypto.ec,jdk.unsupported --output out/jre
   rm -rf jdk-*
   makeself --needroot --quiet --notemp out traccar.run "traccar" ./setup.sh
