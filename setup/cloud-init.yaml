@@ -7,14 +7,15 @@ write_files:
       <properties>
 
         <entry key="config.default">./conf/default.xml</entry>
-  
-        <entry key='database.driver'>com.mysql.jdbc.Driver</entry>
-        <entry key='database.url'>jdbc:mysql://localhost/traccar?zeroDateTimeBehavior=round&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;autoReconnect=true&amp;useUnicode=yes&amp;characterEncoding=UTF-8&amp;sessionVariables=sql_mode=''</entry>
-        <entry key='database.user'>root</entry>
-        <entry key='database.password'>root</entry>
+
+        <entry key='database.driver'>com.mysql.cj.jdbc.Driver</entry>
+        <entry key='database.url'>jdbc:mysql://localhost/traccar?zeroDateTimeBehavior=round&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true&amp;sslMode=PREFERRED&amp;allowMultiQueries=true&amp;autoReconnect=true&amp;useUnicode=yes&amp;characterEncoding=UTF-8&amp;sessionVariables=sql_mode=''</entry>
+        <entry key='database.user'>traccar</entry>
+        <entry key='database.password'>DATABASE_PASSWORD</entry>
 
       </properties>
     path: /root/traccar.xml
+    permissions: '0600'
 
 package_update: true
 packages:
@@ -22,8 +23,12 @@ packages:
   - mysql-server
 
 runcmd:
-  - mysql -u root --execute="ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root'; GRANT ALL ON *.* TO 'root'@'localhost' WITH GRANT OPTION; FLUSH PRIVILEGES; CREATE DATABASE traccar;"
+  - |
+    DATABASE_PASSWORD=$(openssl rand -hex 24)
+    mysql -u root --execute="CREATE DATABASE traccar; CREATE USER 'traccar'@'localhost' IDENTIFIED BY '${DATABASE_PASSWORD}'; GRANT ALL ON traccar.* TO 'traccar'@'localhost'; FLUSH PRIVILEGES;"
+    sed -i "s/DATABASE_PASSWORD/${DATABASE_PASSWORD}/" /root/traccar.xml
   - wget https://www.traccar.org/download/traccar-linux-64-latest.zip
   - unzip traccar-linux-*.zip && ./traccar.run
   - cp /root/traccar.xml /opt/traccar/conf/
+  - chmod 600 /opt/traccar/conf/traccar.xml
   - service traccar start
